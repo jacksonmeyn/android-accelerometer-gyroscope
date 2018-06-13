@@ -77,7 +77,7 @@ public class DeviceSensor implements SensorEventListener {
             sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL);
             tripId = System.currentTimeMillis()/1000;
             timer = new Timer();
-            timer.scheduleAtFixedRate(new SendTimerTask(), 1000, 1000);
+            timer.scheduleAtFixedRate(new SendTimerTask(), 1000, 100);
             isEnabled = true;
         }
     }

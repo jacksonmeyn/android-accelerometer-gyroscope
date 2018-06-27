@@ -35,7 +35,7 @@
     <string name="login_label">LOGIN</string>
     <string name="iot_label">IOT</string>
     <string name="log_label">LOG</string>
-    <string name="accel_label">Toggle Accel</string>
+    <string name="accel_label">Toggle Data Publish</string>
     <string name="home_label">Open Home</string>
     <string name="profiles_label">Open Profiles</string>
     <string name="web_label">Open Quickstart</string>

@@ -60,7 +60,8 @@ public class MessageFactory {
                 "\"heading\":" + heading + ", " +
                 "\"speed\":" + speed + ", " +
                 "\"trip_id\": \"" + tripId + "\", " +
-                "\"timestamp\":\"" + isoTimestamp + "\" " +
+                "\"timestamp\":\"" + isoTimestamp + "\", " +
+                "\"isFall\":false" +
                 "} }";
     }
 

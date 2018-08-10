@@ -1,6 +1,7 @@
 # Changes to starter app by Jackson Meyn
 - Change MQTT message interval to 100ms (from 1000)
 - Helpful article for connecting to cloud (not done yet) https://www.ibm.com/developerworks/library/iot-mobile-phone-iot-device-bluemix-apps-trs/index.html
+- 3/8/18: Attempted to upload visualisation app from tutorial but didn't work. Was able to upload unrelated getting started app using same process though
 
 # IoT Starter for Android
 IoT Starter is a demo application for interacting with IBM Watson IoT Platform.

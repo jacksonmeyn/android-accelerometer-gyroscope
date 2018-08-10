@@ -143,7 +143,7 @@ public class DeviceSensor implements SensorEventListener {
     }
 
     /**
-     * Timer task for sending accel data on 1000ms intervals
+     * Timer task for sending accel data on 100ms intervals
      */
     private class SendTimerTask extends TimerTask {
 
@@ -164,7 +164,7 @@ public class DeviceSensor implements SensorEventListener {
                 heading = app.getCurrentLocation().getBearing();
                 speed = app.getCurrentLocation().getSpeed() * 3.6f;
             }
-            String messageData = MessageFactory.getAccelMessage(G, O, yaw, lon, lat, heading, speed, tripId);
+            String messageData = MessageFactory.getAccelMessage(G, O, yaw, lon, lat, heading, speed, tripId, app.getIsFall());
 
             try {
                 // create ActionListener to handle message published results

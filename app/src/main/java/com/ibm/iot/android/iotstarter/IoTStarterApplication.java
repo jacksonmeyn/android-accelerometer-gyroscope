@@ -45,6 +45,9 @@ import java.util.*;
  * important device and application information.
  */
 public class IoTStarterApplication extends Application {
+
+
+
     private final static String TAG = IoTStarterApplication.class.getName();
 
     private boolean tutorialShown = false;
@@ -70,6 +73,16 @@ public class IoTStarterApplication extends Application {
     private int receiveCount = 0;
     private int unreadCount = 0;
 
+    private boolean isFall;
+
+    public boolean getIsFall() {
+        return this.isFall;
+    }
+
+    public boolean setIsFall(boolean isFall) {
+        return this.isFall = isFall;
+    }
+
     private int color = Color.argb(1, 58, 74, 83);
     private boolean isCameraOn = false;
     private float[] accelData;
@@ -93,6 +106,8 @@ public class IoTStarterApplication extends Application {
     public void onCreate() {
         Log.d(TAG, ".onCreate() entered");
         super.onCreate();
+
+        setIsFall(false);
 
         settings = getSharedPreferences(Constants.SETTINGS, 0);
 

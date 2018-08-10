@@ -93,7 +93,7 @@ public class MyIoTCallbacks implements IoTCallbacks {
         // TODO: Process message
         try {
             // send the message through the application logic
-            MessageConductor.getInstance(context).steerMessage(payload, topic);
+            MessageConductor.getInstance(context).steerMessage(payload);
         } catch (JSONException e) {
             Log.e(TAG, ".messageArrived() - Exception caught while steering a message", e.getCause());
             e.printStackTrace();

@@ -60,126 +60,12 @@ public class MessageConductor {
      * @param topic The topic the MQTT message was received on.
      * @throws JSONException If the message contains invalid JSON.
      */
-    public void steerMessage(String payload, String topic) throws JSONException {
+    public void steerMessage(String payload) throws JSONException {
         Log.d(TAG, ".steerMessage() entered");
         JSONObject top = new JSONObject(payload);
         JSONObject d = top.getJSONObject("d");
 
-        if (topic.contains(Constants.COLOR_EVENT)) {
-            Log.d(TAG, "Color Event");
-            int r = d.getInt("r");
-            int g = d.getInt("g");
-            int b = d.getInt("b");
-            // alpha value received is 0.0 < a < 1.0 but Color.argb expects 0 < a < 255
-            int alpha = (int)(d.getDouble("alpha")*255.0);
-            if ((r > 255 || r < 0) ||
-                    (g > 255 || g < 0) ||
-                    (b > 255 || b < 0) ||
-                    (alpha > 255 || alpha < 0)) {
-                return;
-            }
+        app.setIsFall(d.getBoolean("isFall"));
 
-            app.setColor(Color.argb(alpha, r, g, b));
-
-            Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_IOT);
-            actionIntent.putExtra(Constants.INTENT_DATA, Constants.COLOR_EVENT);
-            context.sendBroadcast(actionIntent);
-
-        } else if (topic.contains(Constants.LIGHT_EVENT)) {
-            Log.d(TAG, "Light Event");
-            // Set light on or off, or toggle light otherwise.
-            String light = d.optString("light");
-            Boolean newState;
-            if ("on".equals(light)) {
-                newState = true;
-            } else if ("off".equals(light)) {
-                newState = false;
-            } else {
-                newState = null;
-            }
-            app.handleLightMessage(newState);
-        } else if (topic.contains(Constants.TEXT_EVENT)) {
-            int unreadCount = app.getUnreadCount();
-            String messageText = d.getString("text");
-            app.setUnreadCount(++unreadCount);
-
-            // Log message with the following format:
-            // [yyyy-mm-dd hh:mm:ss.S] Received text:
-            // <message text>
-            Date date = new Date();
-            String logMessage = "["+new Timestamp(date.getTime())+"] Received Text:\n";
-            app.getMessageLog().add(logMessage + messageText);
-
-            // Send intent to LOG fragment to mark list data invalidated
-            String runningActivity = app.getCurrentRunningActivity();
-            //if (runningActivity != null && runningActivity.equals(LogPagerFragment.class.getName())) {
-                Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOG);
-                actionIntent.putExtra(Constants.INTENT_DATA, Constants.TEXT_EVENT);
-                context.sendBroadcast(actionIntent);
-            //}
-
-            // Send intent to current active fragment / activity to update Unread message count
-            // Skip sending intent if active tab is LOG
-            // TODO: 'current activity' code needs fixing.
-            Intent unreadIntent;
-            if (runningActivity.equals(LogPagerFragment.class.getName())) {
-                unreadIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOG);
-            } else if (runningActivity.equals(LoginPagerFragment.class.getName())) {
-                unreadIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOGIN);
-            } else if (runningActivity.equals(IoTPagerFragment.class.getName())) {
-                unreadIntent = new Intent(Constants.APP_ID + Constants.INTENT_IOT);
-            } else if (runningActivity.equals(ProfilesActivity.class.getName())) {
-                unreadIntent = new Intent(Constants.APP_ID + Constants.INTENT_PROFILES);
-            } else {
-                return;
-            }
-
-            if (messageText != null) {
-                unreadIntent.putExtra(Constants.INTENT_DATA, Constants.UNREAD_EVENT);
-                context.sendBroadcast(unreadIntent);
-            }
-        } else if (topic.contains(Constants.ALERT_EVENT)) {
-            // save payload in an arrayList
-            int unreadCount = app.getUnreadCount();
-            String messageText = d.getString("text");
-            app.setUnreadCount(++unreadCount);
-
-            // Log message with the following format:
-            // [yyyy-mm-dd hh:mm:ss.S] Received alert:
-            // <message text>
-            Date date = new Date();
-            String logMessage = "["+new Timestamp(date.getTime())+"] Received Alert:\n";
-            app.getMessageLog().add(logMessage + messageText);
-
-            String runningActivity = app.getCurrentRunningActivity();
-            if (runningActivity != null) {
-                //if (runningActivity.equals(LogPagerFragment.class.getName())) {
-                    Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOG);
-                    actionIntent.putExtra(Constants.INTENT_DATA, Constants.TEXT_EVENT);
-                    context.sendBroadcast(actionIntent);
-                //}
-
-                // Send alert intent with message payload to current active activity / fragment.
-                // TODO: update for current activity changes.
-                Intent alertIntent;
-                if (runningActivity.equals(LogPagerFragment.class.getName())) {
-                    alertIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOG);
-                } else if (runningActivity.equals(LoginPagerFragment.class.getName())) {
-                    alertIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOGIN);
-                } else if (runningActivity.equals(IoTPagerFragment.class.getName())) {
-                    alertIntent = new Intent(Constants.APP_ID + Constants.INTENT_IOT);
-                } else if (runningActivity.equals(ProfilesActivity.class.getName())) {
-                    alertIntent = new Intent(Constants.APP_ID + Constants.INTENT_PROFILES);
-                } else {
-                    return;
-                }
-
-                if (messageText != null) {
-                    alertIntent.putExtra(Constants.INTENT_DATA, Constants.ALERT_EVENT);
-                    alertIntent.putExtra(Constants.INTENT_DATA_MESSAGE, d.getString("text"));
-                    context.sendBroadcast(alertIntent);
-                }
-            }
-        }
     }
 }
